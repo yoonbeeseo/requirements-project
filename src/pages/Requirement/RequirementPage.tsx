@@ -5,6 +5,7 @@ import { AUTH } from "../../context/hooks";
 import ProjectItem from "../Project/ProjectItem";
 import NotFound from "../../components/ui/NotFound";
 import RequirementForm from "./RequirementForm";
+import RequirementItem from "./RequirementItem";
 
 const RequirementPage = () => {
   const { projectId } = useParams<{ projectId: string }>();
@@ -24,6 +25,20 @@ const RequirementPage = () => {
           const data = snap.docs.map(
             (doc) => ({ ...doc.data(), id: doc.id } as RProps)
           );
+
+          // const sort = () => {
+          //   return data.sort((a, b) => {
+          //     if (a.createdAt === b.createdAt) {
+          //       return 0;
+          //     } else if (a.createdAt > b.createdAt) {
+          //       return -1;
+          //     } else {
+          //       return 1;
+          //     }
+          //   });
+          // };
+
+          // console.log("sorted array", sort());
 
           setRequirements(data);
         });
@@ -55,11 +70,6 @@ const RequirementPage = () => {
   const [isAdding, setIsAdding] = useState(false);
   const addHandler = () => setIsAdding((prev) => !prev);
 
-  useEffect(() => {
-    if (requirements.length === 0) {
-      setIsAdding(true);
-    }
-  }, [requirements]);
   return !project ? (
     <NotFound
       message="해당 프로젝트는 삭제되었거나 존재하지 않습니다."
@@ -75,15 +85,14 @@ const RequirementPage = () => {
           onCancel={addHandler}
         />
       ) : (
-        <button className="button" onClick={addHandler}>
+        <button className="button mt-5" onClick={addHandler}>
           요구사항 추가
         </button>
       )}
-      <ul>
+      <ul className="col gap-y-2.5 mt-5">
         {requirements.map((r) => (
           <li key={r?.id}>
-            {r.page} - {r.function} - {r.managers.length}명의 담당자 -
-            {r.desc.length}개의 상세내역
+            <RequirementItem {...r} />
           </li>
         ))}
       </ul>

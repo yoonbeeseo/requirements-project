@@ -1,6 +1,7 @@
 import React, { FormEvent, useEffect, useRef, useState } from "react";
 import TextInput from "../../components/ui/TextInput";
 import { db, FBCollection } from "../../lib/firebase";
+import { progresses } from "../../lib/dummy";
 
 interface Props {
   payload?: RProps;
@@ -141,7 +142,7 @@ const RequirementForm = ({ onCancel, payload, projectId, uid }: Props) => {
           ref={proRef}
           value={r.progress}
           placeholder="진행 상태 선택"
-          data={["계획중", "진행중", "완료"] as RProgress[]}
+          data={progresses}
         />
         <div className="flex-1">
           <TextInput
