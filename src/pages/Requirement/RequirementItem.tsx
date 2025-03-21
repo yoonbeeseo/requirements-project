@@ -2,8 +2,10 @@ import { useState } from "react";
 import { progresses } from "../../lib/dummy";
 import { db, FBCollection } from "../../lib/firebase";
 import { useNavigate } from "react-router-dom";
+import { AUTH } from "../../context/hooks";
 
 const RequirementItem = (r: RProps) => {
+  const { user } = AUTH.use();
   const { page, desc, function: f, managers, progress } = r;
 
   const [isHovering, setIsHovering] = useState(false);
@@ -15,8 +17,15 @@ const RequirementItem = (r: RProps) => {
   return (
     <div
       className="border rounded p-2.5 border-border col relative"
-      onMouseEnter={() => setIsHovering(true)}
-      onMouseLeave={() => setIsHovering(false)}
+      onMouseEnter={() => {
+        if (!user || user.uid === r.id) {
+          return;
+        }
+        setIsHovering(true);
+      }}
+      onMouseLeave={() => {
+        setIsHovering(false);
+      }}
     >
       {isHovering && (
         <div className="flex gap-x-2.5 absolute bottom-2.5 right-2.5">
@@ -44,20 +53,24 @@ const RequirementItem = (r: RProps) => {
         <p className="font-bold">
           {page}/{f}
         </p>
-        <select
-          value={progress}
-          onChange={async (e) => {
-            try {
-              await ref.update({ progress: e.target.value });
-            } catch (error: any) {
-              return alert(error.message);
-            }
-          }}
-        >
-          {progresses.map((item) => (
-            <option key={item}>{item}</option>
-          ))}
-        </select>
+        {user && user.uid === r.uid ? (
+          <select
+            value={progress}
+            onChange={async (e) => {
+              try {
+                await ref.update({ progress: e.target.value });
+              } catch (error: any) {
+                return alert(error.message);
+              }
+            }}
+          >
+            {progresses.map((item) => (
+              <option key={item}>{item}</option>
+            ))}
+          </select>
+        ) : (
+          <p>{progress}</p>
+        )}
       </div>
       <ul className="col p-2.5 gap-y-1">
         {desc.map((item, index) => (

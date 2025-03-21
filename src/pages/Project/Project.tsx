@@ -31,7 +31,7 @@ const Project = () => {
 
   return user ? (
     <div className="pt-25 px-5">
-      <div className="flex max-w-300 items-center p-5 fixed top-0 left-[50%] w-full bg-white justify-between border-b border-border -translate-x-[50%]">
+      <div className="flex max-w-300 items-center p-5 fixed top-[61px] left-[50%] w-full bg-white justify-between border-b border-border -translate-x-[50%]">
         <h1 className="font-black text-xl">{user.name}의 프로젝트들</h1>
         <button onClick={addHandler} className="button">
           추가

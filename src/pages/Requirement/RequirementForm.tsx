@@ -37,6 +37,7 @@ const RequirementForm = ({ onCancel, payload, projectId, uid }: Props) => {
   const dRef = useRef<HTMLInputElement>(null);
   const mRef = useRef<HTMLInputElement>(null);
   const proRef = useRef<HTMLSelectElement>(null);
+  const sRef = useRef<HTMLInputElement>(null);
 
   const [desc, setDesc] = useState("");
   const [manager, setManager] = useState("");
@@ -73,7 +74,12 @@ const RequirementForm = ({ onCancel, payload, projectId, uid }: Props) => {
     const ref = db.collection(FBCollection.REQUIREMENTS);
 
     if (!payload) {
-      const newR: RProps = { ...r, uid, projectId };
+      const newR: RProps = {
+        ...r,
+        uid,
+        projectId,
+        isSharable: sRef.current?.checked,
+      };
       try {
         await ref.add(newR);
         alert("추가되었습니다.");
@@ -113,7 +119,9 @@ const RequirementForm = ({ onCancel, payload, projectId, uid }: Props) => {
     }
 
     try {
-      await ref.doc(payload?.id).update(r);
+      await ref
+        .doc(payload?.id)
+        .update({ ...r, isSharable: sRef.current?.checked });
       alert("수정되었습니다.");
       onCancel();
     } catch (error: any) {
@@ -275,6 +283,12 @@ const RequirementForm = ({ onCancel, payload, projectId, uid }: Props) => {
             ))}
           </ul>
         )}
+      </div>
+      <div className="flex justify-between items-center">
+        <label htmlFor="share" className="ti-label">
+          누구나 볼 수 있도록 공유하시겠습니까?
+        </label>
+        <input type="checkbox" id="share" ref={sRef} className="w-5 h-5" />
       </div>
 
       <div className="flex gap-x-2.5 mt-2.5">

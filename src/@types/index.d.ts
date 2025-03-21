@@ -18,6 +18,13 @@ interface RProps {
   progress: RProgress | "";
 
   id?: string; //! firebase가 자동생성해주는 아이디
+
+  isSharable?: boolean;
 }
 
 type RProgress = "계획중" | "진행중" | "완료";
+
+interface MenuProps {
+  name: string;
+  path?: string;
+}

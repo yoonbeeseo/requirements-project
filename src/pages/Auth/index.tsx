@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { emailValidator } from "../../utils";
 import { AUTH } from "../../context/hooks";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import TextInput from "../../components/ui/TextInput";
 
 const AuthPage = () => {
@@ -77,6 +77,7 @@ const AuthPage = () => {
   return (
     <div>
       <form
+        className="col gap-y-2.5 max-w-100 mx-auto p-5"
         onSubmit={(e) => {
           e.preventDefault();
           //! 새로고침 방지
@@ -128,7 +129,15 @@ const AuthPage = () => {
           placeholder="* * * * * * * *"
           ref={passwordRef}
         />
-        <button>{isNew ? "회원가입" : "로그인"}</button>
+        <button className="button mt-2.5">
+          {isNew ? "회원가입" : "로그인"}
+        </button>
+        <Link
+          to={isNew ? "/signin" : "/signin?content=new"}
+          className="button cancel"
+        >
+          {isNew ? "돌아가기" : "회원가입"}
+        </Link>
       </form>
     </div>
   );
