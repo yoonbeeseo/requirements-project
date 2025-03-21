@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { emailValidator } from "../../utils";
 import { AUTH } from "../../context/hooks";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -95,45 +95,39 @@ const AuthPage = () => {
               placeholder="박보검"
               label="이름"
             />
-            <div>
-              <label htmlFor="jobDesc">jobDesc</label>
-              <select
-                ref={jobRef}
-                id="jobDesc"
-                value={jobDesc}
-                onChange={(e) => setJobDesc(e.target.value as AUTH.UserJob)}
-              >
-                <option>직종 선택</option>
 
-                {AUTH.userJobs.map((option) => (
-                  <option key={option}>{option}</option>
-                ))}
-              </select>
-            </div>
+            <TextInput
+              ref={jobRef}
+              id="jobDesc"
+              value={jobDesc}
+              onChange={(value) => setJobDesc(value as AUTH.UserJob)}
+              label="직종"
+              data={AUTH.userJobs}
+              placeholder="직종 선택"
+              isSelectTag
+            />
           </>
         )}
-        <div>
-          <label htmlFor="email">이메일</label>
-          <input
-            ref={emailRef}
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="email@email.com"
-          />
-        </div>
-        <div>
-          <label htmlFor="password">비밀번호</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="* * * * * * * *"
-            ref={passwordRef}
-          />
-        </div>
+
+        <TextInput
+          ref={emailRef}
+          type="email"
+          id="email"
+          value={email}
+          onChange={setEmail}
+          placeholder="email@email.com"
+          label="이메일"
+        />
+
+        <TextInput
+          label="비밀번호"
+          type="password"
+          id="password"
+          value={password}
+          onChange={setPassword}
+          placeholder="* * * * * * * *"
+          ref={passwordRef}
+        />
         <button>{isNew ? "회원가입" : "로그인"}</button>
       </form>
     </div>

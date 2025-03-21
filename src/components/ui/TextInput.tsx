@@ -1,4 +1,5 @@
 import React, { Ref } from "react";
+import { twMerge } from "tailwind-merge";
 
 interface Props {
   id: string;
@@ -23,17 +24,21 @@ const TextInput = ({
   placeholder,
   type,
 }: Props) => {
+  const i = "ti-input";
   return (
-    <div>
-      <label htmlFor={id}>{label}</label>
+    <div className="ti-div">
+      <label htmlFor={id} className="ti-label">
+        {label}
+      </label>
       {isSelectTag ? (
         <select
           id={id}
           onChange={(e) => onChange(e.target.value)}
           value={value}
           ref={ref as Ref<HTMLSelectElement>}
+          className={i}
         >
-          <option>{placeholder ?? "선택"}</option>
+          <option value="">{placeholder ?? "선택"}</option>
           {data?.map((option) => (
             <option key={option} value={option}>
               {option}
@@ -42,6 +47,7 @@ const TextInput = ({
         </select>
       ) : (
         <input
+          className={twMerge(i, "px-1.5")}
           id={id}
           onChange={(e) => onChange(e.target.value)}
           value={value}

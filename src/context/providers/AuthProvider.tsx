@@ -1,13 +1,14 @@
 import { useState, useEffect, PropsWithChildren } from "react";
 import { AUTH } from "../hooks";
-import { authService, db } from "../../lib/firebase";
+import { authService, db, FBCollection } from "../../lib/firebase";
 
+const ref = db.collection(FBCollection.USERS);
 export default function AuthProvider({ children }: PropsWithChildren) {
   const [user, setUser] = useState(AUTH.initialState.user);
   const [initialized, setInitialized] = useState(false);
 
   const fetchUser = async (uid: string) => {
-    const snap = await db.collection("users").doc(uid).get();
+    const snap = await ref.doc(uid).get();
     const data = snap.data() as null | AUTH.User;
     if (!data) {
       return;
@@ -57,10 +58,7 @@ export default function AuthProvider({ children }: PropsWithChildren) {
         error.message ===
         "Firebase: The supplied auth credential is incorrect, malformed or has expired. (auth/invalid-credential)."
       ) {
-        const snap = await db
-          .collection("users")
-          .where("email", "==", email)
-          .get();
+        const snap = await ref.where("email", "==", email).get();
         const data = snap.docs.map((doc) => ({ ...doc.data() }));
         if (!data || data.length === 0) {
           return { message: "존재하지 않는 유저입니다." };
@@ -86,7 +84,7 @@ export default function AuthProvider({ children }: PropsWithChildren) {
       }
 
       const newUser: AUTH.User = { email, jobDesc, name, uid: user.uid };
-      await db.collection("users").doc(user.uid).set(newUser);
+      await ref.doc(user.uid).set(newUser);
 
       setUser(newUser);
 
