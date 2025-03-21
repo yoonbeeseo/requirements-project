@@ -9,7 +9,8 @@ interface Props {
   onCancel: () => void;
   uid: string;
   projectId: string;
-  // onSubmitEditing?: () => void
+
+  onSubmitEditing?: () => void;
 }
 
 const initialState: RProps = {
@@ -26,7 +27,13 @@ const initialState: RProps = {
   uid: "",
 };
 
-const RequirementForm = ({ onCancel, payload, projectId, uid }: Props) => {
+const RequirementForm = ({
+  onCancel,
+  payload,
+  projectId,
+  uid,
+  onSubmitEditing,
+}: Props) => {
   const [r, setR] = useState(payload ?? initialState);
 
   const onChangeR = (target: keyof RProps, value: any) =>
@@ -93,18 +100,12 @@ const RequirementForm = ({ onCancel, payload, projectId, uid }: Props) => {
       payload.progress === r.progress &&
       payload.page === r.page &&
       payload.function === r.function;
-    if (isPPFSame) {
-      return alert("변경사항이 없습니다.");
-    }
     let isDescSame = true;
     for (const desc of r.desc) {
       const foundDesc = payload.desc.find((item) => item === desc);
       if (!foundDesc) {
         isDescSame = false;
       }
-    }
-    if (isDescSame) {
-      return alert("상세 내용이 변경되지 않았습니다.");
     }
 
     let isManagerSame = true;
@@ -114,8 +115,14 @@ const RequirementForm = ({ onCancel, payload, projectId, uid }: Props) => {
         isManagerSame = false;
       }
     }
-    if (isManagerSame) {
-      return alert("담당자가 변경되지 않았습니다.");
+
+    if (
+      isPPFSame &&
+      isDescSame &&
+      isManagerSame &&
+      sRef.current?.checked === r?.isSharable
+    ) {
+      return alert("변경사항이 없습니다.");
     }
 
     try {
@@ -124,6 +131,9 @@ const RequirementForm = ({ onCancel, payload, projectId, uid }: Props) => {
         .update({ ...r, isSharable: sRef.current?.checked });
       alert("수정되었습니다.");
       onCancel();
+      if (onSubmitEditing) {
+        onSubmitEditing();
+      }
     } catch (error: any) {
       alert(error.message);
     }
@@ -134,7 +144,10 @@ const RequirementForm = ({ onCancel, payload, projectId, uid }: Props) => {
   }, []);
 
   return (
-    <form onSubmit={onSubmit} className="col gap-y-2.5 my-2.5">
+    <form
+      onSubmit={onSubmit}
+      className="col gap-y-2.5 my-2.5 max-w-100 mx-auto"
+    >
       <div className="flex gap-x-2.5">
         <TextInput
           isSelectTag
@@ -288,7 +301,13 @@ const RequirementForm = ({ onCancel, payload, projectId, uid }: Props) => {
         <label htmlFor="share" className="ti-label">
           누구나 볼 수 있도록 공유하시겠습니까?
         </label>
-        <input type="checkbox" id="share" ref={sRef} className="w-5 h-5" />
+        <input
+          type="checkbox"
+          id="share"
+          ref={sRef}
+          className="w-5 h-5"
+          checked={r.isSharable}
+        />
       </div>
 
       <div className="flex gap-x-2.5 mt-2.5">

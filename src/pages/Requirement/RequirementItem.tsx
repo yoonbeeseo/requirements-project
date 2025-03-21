@@ -14,6 +14,13 @@ const RequirementItem = (r: RProps) => {
 
   const navi = useNavigate();
 
+  const move = () => {
+    navi(r.id!);
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
   return (
     <div
       className="border rounded p-2.5 border-border col relative"
@@ -29,7 +36,7 @@ const RequirementItem = (r: RProps) => {
     >
       {isHovering && (
         <div className="flex gap-x-2.5 absolute bottom-2.5 right-2.5">
-          <button className="button cancel" onClick={() => navi(r.id!)}>
+          <button className="button cancel" onClick={move}>
             수정
           </button>
           <button
@@ -50,9 +57,12 @@ const RequirementItem = (r: RProps) => {
         </div>
       )}
       <div className="flex justify-between border-b border-border pb-2.5">
-        <p className="font-bold">
+        <button
+          className="font-bold flex-1 text-left cursor-pointer"
+          onClick={move}
+        >
           {page}/{f}
-        </p>
+        </button>
         {user && user.uid === r.uid ? (
           <select
             value={progress}
