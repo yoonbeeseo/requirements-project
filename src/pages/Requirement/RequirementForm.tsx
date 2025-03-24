@@ -1,4 +1,4 @@
-import React, { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import TextInput from "../../components/ui/TextInput";
 import { db, FBCollection } from "../../lib/firebase";
 import { progresses } from "../../lib/dummy";
@@ -17,6 +17,7 @@ const initialState: RProps = {
   page: "",
   function: "",
   desc: [],
+  isSharable: false,
 
   managers: [],
 
