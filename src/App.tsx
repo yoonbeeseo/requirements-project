@@ -11,7 +11,7 @@ import NotFound from "./components/ui/NotFound";
 const App = () => {
   const { user } = AUTH.use();
   return (
-    <BrowserRouter basename="requirements-project">
+    <BrowserRouter basename="/requirements-project">
       <Routes>
         <Route
           path="*"
