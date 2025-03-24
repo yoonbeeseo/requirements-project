@@ -7,6 +7,7 @@ import RequirementItem from "../Requirement/RequirementItem";
 import RequirementForm from "../Requirement/RequirementForm";
 
 const RDetailPage = () => {
+  const [project, setProject] = useState<ProjectProps | null>(null);
   const [r, setR] = useState<RProps | null>(null);
   const { user } = AUTH.use();
   const { rid, projectId } = useParams<{ rid: string; projectId: string }>();
@@ -28,6 +29,25 @@ const RDetailPage = () => {
     return subR;
   }, [rid]);
 
+  useEffect(() => {
+    if (projectId) {
+      const subProject = db
+        .collection(FBCollection.PROJECTS)
+        .doc(projectId)
+        .onSnapshot((doc) => {
+          const data = doc.data() as ProjectProps;
+          if (!data) {
+            setProject(null);
+          } else {
+            setProject(data);
+          }
+        });
+
+      subProject;
+      return subProject;
+    }
+  }, [projectId]);
+
   const navi = useNavigate();
 
   const back = () => {
@@ -41,6 +61,8 @@ const RDetailPage = () => {
   if (r.isSharable && (!user || user.uid !== r.uid)) {
     return (
       <div className="p-5">
+        <h1 className="mb-2.5 text-2xl">{project?.name}</h1>
+
         <RequirementItem {...r} />
       </div>
     );
@@ -59,6 +81,7 @@ const RDetailPage = () => {
           </Link>
         </div>
       </div>
+
       <RequirementForm
         payload={r}
         onCancel={back}

@@ -6,7 +6,7 @@ import { AUTH } from "../../context/hooks";
 
 const RequirementItem = (r: RProps) => {
   const { user } = AUTH.use();
-  const { page, desc, function: f, managers, progress } = r;
+  const { page, desc, function: f, managers, progress, uid, projectId } = r;
 
   const [isHovering, setIsHovering] = useState(false);
 
@@ -15,11 +15,26 @@ const RequirementItem = (r: RProps) => {
   const navi = useNavigate();
 
   const move = () => {
+    if (user?.uid !== uid) {
+      return alert("PM이 아니면 수정할 수 없습니다.");
+    }
     navi(r.id!);
     window.scrollTo({
       top: 0,
       behavior: "smooth",
     });
+  };
+
+  const onCopyLink = async () => {
+    try {
+      const url = `${import.meta.env.VITE_WEB_URL}/project/${projectId}/${
+        r.id
+      }`;
+      await navigator.clipboard.writeText(url);
+      alert("요구사항 상세내용 링크가 복사되었습니다.");
+    } catch (error: any) {
+      alert(error.message);
+    }
   };
   return (
     <div
@@ -36,7 +51,15 @@ const RequirementItem = (r: RProps) => {
     >
       {isHovering && (
         <div className="flex gap-x-2.5 absolute bottom-2.5 right-2.5">
-          <button className="button cancel" onClick={move}>
+          {r.isSharable && (
+            <button
+              className="button cancel hover:text-theme"
+              onClick={onCopyLink}
+            >
+              공유
+            </button>
+          )}
+          <button className="button cancel hover:text-theme" onClick={move}>
             수정
           </button>
           <button
